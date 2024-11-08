@@ -1,0 +1,39 @@
+import java.io.*;
+import java.net.*;
+
+public class TCPClient {
+    public static void main (String[] args) {
+        try {
+            Socket s = new Socket("localhost", 12345);
+            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+            BufferedReader userinput = new BufferedReader(new InputStreamReader(System.in));
+            
+            String message;
+            while(true) {
+                System.out.print("You: ");
+                message = userinput.readLine();
+                out.println(message);
+                
+                if(message.equalsIgnoreCase("bye")) {
+                    System.out.println("You terminated the connection");
+                    break;
+                }
+
+                message = in.readLine();
+                if(message.equalsIgnoreCase("bye")) {
+                    System.out.println("Server terminated the connection");
+                    break;
+                }
+                System.out.println("Server: " + message);
+            }
+
+            in.close();
+            out.close();
+            userinput.close();
+            s.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

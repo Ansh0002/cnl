@@ -1,0 +1,43 @@
+import java.io.*;
+import java.net.*;
+
+public class TCPServer {
+    public static void main (String[] args) {
+        try {
+            ServerSocket ss = new ServerSocket(12345);
+            Socket s = ss.accept();
+            System.out.println("Connection is established on: " + s.getInetAddress());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+            BufferedReader userinput = new BufferedReader(new InputStreamReader(System.in));
+
+            String message;
+            while(true) {
+                message = in.readLine();
+                if(message.equalsIgnoreCase("bye")) {
+                    System.out.println("Client terminated the connection");
+                    break;
+                }
+                System.out.println("Client: " + message);
+
+                System.out.print("You: ");
+                message = userinput.readLine();
+                out.println(message);
+                
+                if(message.equalsIgnoreCase("bye")) {
+                    System.out.println("You terminated the connection");
+                    break;
+                }
+            }
+
+            in.close();
+            out.close();
+            userinput.close();
+            s.close();
+            ss.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
