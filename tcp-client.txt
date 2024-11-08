@@ -1,0 +1,35 @@
+import java.io.*;
+import java.net.*;
+
+
+public class jyclient {
+    public static void main(String[] args) {
+        try {
+            // Establishing the connection to the server on localhost:1900
+            Socket cs = new Socket("localhost", 1900);
+            System.out.println("Connected to the server");
+
+
+            // Send a message to the server
+            PrintWriter out = new PrintWriter(cs.getOutputStream(), true);
+            out.println("Hello from the client!"); // Send a message to the server
+
+
+            // Read the response from the server
+            BufferedReader in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
+            String serverMessage = in.readLine();
+            System.out.println("Server response: " + serverMessage); // Print server's response
+
+
+            // Close the streams and socket
+            in.close();
+            out.close();
+            cs.close();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+

@@ -1,0 +1,54 @@
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
+
+public class userver {
+    public static void main(String[] args) {
+        try {
+            // Create a DatagramSocket and bind it to a specific port
+            DatagramSocket serverSocket = new DatagramSocket(9876);
+            System.out.println("UDP Server is running...");
+
+
+            byte[] receiveData = new byte[1024];
+
+
+            while (true) {
+                // Create a DatagramPacket to receive data from clients
+                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+
+
+                // Receive data from client
+                serverSocket.receive(receivePacket);
+
+
+                // Convert the received data to a string
+                String message = new String(receivePacket.getData(), 0, receivePacket.getLength());
+
+
+                // Display the received message and client's address
+                System.out.println("Received from client: " + message);
+                System.out.println("Client IP: " + receivePacket.getAddress() + ", Port: " + receivePacket.getPort());
+
+
+                // Send a response back to the client
+                String responseMessage = "Hello from UDP Server!";
+                byte[] responseData = responseMessage.getBytes();
+                InetAddress clientAddress = receivePacket.getAddress();
+                int clientPort = receivePacket.getPort();
+
+
+                // Create a DatagramPacket to send the response
+                DatagramPacket responsePacket = new DatagramPacket(responseData, responseData.length, clientAddress, clientPort);
+
+
+                // Send the response packet
+                serverSocket.send(responsePacket);
+                System.out.println("Sent response to client: " + responseMessage);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
